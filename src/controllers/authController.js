@@ -49,7 +49,22 @@ const signup = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter((tkn) => tkn.token !== req.token);
+    await req.user.save();
+    res.send({
+      message: 'Logout Successfull',
+    });
+  } catch (e) {
+    res.status(500).send({
+      error: e.message,
+    });
+  }
+};
+
 module.exports = {
   login,
   signup,
+  logout,
 };
