@@ -43,7 +43,13 @@ const deleteCategory = async (req, res) => {
         error: 'Category Not Found!',
       });
     }
-    await Category.deleteOne(req.params.id);
+    await Category.deleteOne({
+      _id: req.params.id,
+    });
+    // Delete all posts of this category
+    await Post.deleteMany({
+      category: category.name,
+    });
     res.send(category);
   } catch (e) {
     res.status(500).send({
