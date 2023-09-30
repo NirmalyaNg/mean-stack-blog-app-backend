@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Comment = require('../models/comment');
 
 const postSchema = new mongoose.Schema(
   {
@@ -59,6 +60,15 @@ postSchema.virtual('comments', {
   ref: 'Comment',
   localField: '_id',
   foreignField: 'postId',
+});
+
+// Delete all comments of specific post after deletion
+postSchema.post('deleteOne', async function (next) {
+  const post = this;
+  await Comment.deleteMany({
+    postId: post._id,
+  });
+  next();
 });
 
 const postModel = mongoose.model('Post', postSchema);
