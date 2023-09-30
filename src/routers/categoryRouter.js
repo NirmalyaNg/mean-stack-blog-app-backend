@@ -2,7 +2,7 @@ const express = require('express');
 const {
   addCategory,
   fetchCategories,
-  deleteCategory,
+  deleteCategoryUpdated,
   editCategory,
 } = require('../controllers/categoryController');
 const auth = require('../middlewares/auth');
@@ -16,7 +16,7 @@ router.post('/', auth, addCategory);
 router.get('/', fetchCategories);
 
 // Delete Category
-router.delete('/:id', auth, deleteCategory);
+router.delete('/:id', auth, deleteCategoryUpdated);
 
 // Edit Category
 router.patch('/:id', auth, editCategory);
