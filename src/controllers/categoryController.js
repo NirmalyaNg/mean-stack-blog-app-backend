@@ -36,25 +36,24 @@ const fetchCategories = async (req, res) => {
   }
 };
 
-const deleteCategory = async (req, res) => {
+const deleteCategoryUpdated = async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
-    if (!category) {
+    const cat = await Category.findOne({ _id: req.params.id });
+    if (!cat) {
       return res.status(404).send({
-        error: 'Category Not Found!',
+        error: 'Category not found',
       });
     }
     await Category.deleteOne({
-      _id: req.params.id,
+      _id: cat._id,
     });
-    // Delete all posts of this category
     await Post.deleteMany({
-      category: category.name,
+      category: cat.name,
     });
-    res.send(category);
+    res.send(cat);
   } catch (e) {
     res.status(500).send({
-      error: e.message,
+      error: 'Error',
     });
   }
 };
@@ -92,6 +91,6 @@ const editCategory = async (req, res) => {
 module.exports = {
   addCategory,
   fetchCategories,
-  deleteCategory,
+  deleteCategoryUpdated,
   editCategory,
 };
