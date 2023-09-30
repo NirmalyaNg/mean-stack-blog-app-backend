@@ -53,7 +53,7 @@ const deleteCategoryUpdated = async (req, res) => {
     res.send(cat);
   } catch (e) {
     res.status(500).send({
-      error: 'Error',
+      error: e.message,
     });
   }
 };
