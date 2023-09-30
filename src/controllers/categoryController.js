@@ -1,5 +1,5 @@
 const Category = require('../models/category');
-const PostModel = require('../models/post');
+const Post = require('../models/post');
 
 const addCategory = async (req, res) => {
   try {
@@ -48,7 +48,7 @@ const deleteCategory = async (req, res) => {
       _id: req.params.id,
     });
     // Delete all posts of this category
-    await PostModel.deleteMany({
+    await Post.deleteMany({
       category: category.name,
     });
     res.send(category);
