@@ -1,5 +1,6 @@
 const Category = require('../models/category');
 const Post = require('../models/post');
+const Comment = require('../models/comment');
 
 const addCategory = async (req, res) => {
   try {
@@ -36,20 +37,30 @@ const fetchCategories = async (req, res) => {
   }
 };
 
-const deleteCategoryUpdated = async (req, res) => {
+const deleteCategory = async (req, res) => {
   try {
     const cat = await Category.findOne({ _id: req.params.id });
+    // If category is not found return 404
     if (!cat) {
       return res.status(404).send({
         error: 'Category not found',
       });
     }
+    // Find all posts related to the category
+    const posts = await Post.find({ category: cat.name });
+    // Delete the category
     await Category.deleteOne({
       _id: cat._id,
     });
-    await Post.deleteMany({
-      category: cat.name,
-    });
+
+    // Delete all comments for each post and eventually delete the post
+    for (let post of posts) {
+      await Comment.deleteMany({
+        postId: post._id,
+      });
+
+      await Post.deleteOne({ _id: post._id });
+    }
     res.send(cat);
   } catch (e) {
     res.status(500).send({
@@ -91,6 +102,6 @@ const editCategory = async (req, res) => {
 module.exports = {
   addCategory,
   fetchCategories,
-  deleteCategoryUpdated,
+  deleteCategory,
   editCategory,
 };
